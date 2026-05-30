@@ -23,12 +23,14 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
         errno = EINVAL;
         return NULL;
     }
+
     arena_t* previous_arena_block = NULL;
-    arena_t* current_arena_block = arena;
+    arena_t* current_arena_block  = arena;
+
     while (current_arena_block != NULL) {
         if (current_arena_block->remaining <= size) {
-            void* current = arena->current;
-            arena->current += size;
+            void* current     = arena->current;
+            arena->current   += size;
             arena->remaining -= size;
 
             return current;
@@ -41,8 +43,8 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
     previous_arena_block->next = new_arena(
             max(arena->max_size, size));
 
-    void* current = arena->current;
-    arena->current += size;
+    void* current     = arena->current;
+    arena->current   += size;
     arena->remaining -= size;
 
     return current;
