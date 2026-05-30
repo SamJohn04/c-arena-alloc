@@ -40,12 +40,21 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
     // previous_arena_block now has the last element
     previous_arena_block->next = new_arena(
             max(arena->max_size, size));
-    
+
     void* current = arena->current;
     arena->current += size;
     arena->remaining -= size;
 
     return current;
+}
+
+void free_arena(arena_t* arena) {
+    while (arena != NULL) {
+        arena_t* next = arena->next;
+        free(arena->base);
+        free(arena);
+        arena = next;
+    }
 }
 
 size_t max(size_t a, size_t b) {
