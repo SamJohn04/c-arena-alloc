@@ -36,7 +36,7 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
             return current;
         }
         previous_arena_block = current_arena_block;
-        current_arena_block = current_arena_block->next;
+        current_arena_block  = current_arena_block->next;
     }
 
     // previous_arena_block now has the last element
