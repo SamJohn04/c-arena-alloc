@@ -12,6 +12,7 @@ arena_t* new_arena(size_t max_size) {
     arena->base      = malloc(max_size);
     arena->current   = arena->base;
     arena->remaining = max_size;
+    arena->max_size  = max_size;
 
     arena->next = NULL;
 
@@ -28,7 +29,7 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
     arena_t* current_arena_block  = arena;
 
     while (current_arena_block != NULL) {
-        if (current_arena_block->remaining <= size) {
+        if (current_arena_block->remaining >= size) {
             void* current     = arena->current;
             arena->current   += size;
             arena->remaining -= size;
@@ -43,6 +44,7 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
     previous_arena_block->next = new_arena(
             max(arena->max_size, size));
 
+    arena             = previous_arena_block->next;
     void* current     = arena->current;
     arena->current   += size;
     arena->remaining -= size;

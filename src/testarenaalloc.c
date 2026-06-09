@@ -9,6 +9,7 @@ int main(void) {
     *a = 10;
     printf("\tAllocation successful\n");
     printf("\t10 == %d\n", *a);
+    printf("\tarena next is NULL: %s\n", arena->next == NULL ? "true" : "false");
     printf("\n");
 
     printf("Allocating an element of size 300\n");
