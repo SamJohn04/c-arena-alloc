@@ -62,4 +62,21 @@ int main(void) {
     printf("Free the arena\n");
     free_arena(arena);
     printf("\tFree successful\n");
+    printf("\n");
+
+    printf("Overflowing with 5 elements for an arena of size 2\n");
+    arena_t* second_arena = new_arena(2 * sizeof(int));
+    int* first            = alloc_from_arena(second_arena, sizeof(int));
+    int* second           = alloc_from_arena(second_arena, sizeof(int));
+    int* third            = alloc_from_arena(second_arena, sizeof(int));
+    int* fourth           = alloc_from_arena(second_arena, sizeof(int));
+    int* fifth            = alloc_from_arena(second_arena, sizeof(int));
+    if (second_arena->remaining > second_arena->max_size) {
+        // the unsigned number overflowed and became really huge
+        errorf("unexpected size for arena remaining");
+        return 1;
+    }
+    printf("\tSuccessful\n");
+
+    free_arena(second_arena);
 }

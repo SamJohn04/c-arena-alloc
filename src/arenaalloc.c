@@ -31,9 +31,9 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
     // loop until a free block is found or current arena block is null
     while (current_arena_block != NULL) {
         if (current_arena_block->remaining >= size) {
-            void* current_memory = arena->current;
-            arena->current      += size;
-            arena->remaining    -= size;
+            void* current_memory            = current_arena_block->current;
+            current_arena_block->current   += size;
+            current_arena_block->remaining -= size;
 
             return current_memory;
         }
