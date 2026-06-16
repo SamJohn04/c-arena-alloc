@@ -1,25 +1,36 @@
 #include "arenaalloc.h"
 #include <stdio.h>
 
+void errorf(char* message) {
+    fprintf(stderr, "[ERROR] %s\n", message);
+}
+
 int main(void) {
     // define for 1 KB
     arena_t* arena = new_arena(1024);
+
     printf("Allocating an element of size %zu\n", sizeof(int));
     int* a = alloc_from_arena(arena, sizeof(int));
-    *a = 10;
+    if (a == NULL) {
+        errorf("allocation failed");
+        return 1;
+    }
     printf("\tAllocation successful\n");
-    printf("\t10 == %d\n", *a);
-    printf("\tarena next is NULL: %s\n", arena->next == NULL ? "true" : "false");
+    if (arena->next != NULL) {
+        errorf("arena next is not NULL");
+        return 1;
+    }
+    printf("\tarena next is NULL\n");
     printf("\n");
 
     printf("Allocating an element of size 300\n");
     void* b = alloc_from_arena(arena, 300);
     if (b == NULL) {
-        printf("\tAllocation failed\n");
+        errorf("allocation failed");
         return 1;
     } else if (b == a) {
-        printf("\tAllocation gave the same pointer twice\n");
-        return 2;
+        errorf("allocation gave the same pointer twice");
+        return 1;
     }
     printf("\tAllocation successful\n");
     printf("\n");
@@ -27,12 +38,11 @@ int main(void) {
     printf("Allocating an element of size 2048\n");
     void* c = alloc_from_arena(arena, 2048);
     if (c == NULL) {
-        printf("\t- Allocation failed\n");
+        errorf("allocation failed");
         return 1;
-    }
-    if (arena->next == NULL || arena->next->next != NULL) {
-        printf("\t- Unexpected size of allocation tables\n");
-        return 2;
+    } else if (arena->next == NULL || arena->next->next != NULL) {
+        errorf("unexpected size of allocation tables");
+        return 1;
     }
     printf("\tAllocation successful\n");
     printf("\n");
@@ -40,12 +50,11 @@ int main(void) {
     printf("Allocating an element of size 200\n");
     void* d = alloc_from_arena(arena, 200);
     if (d == NULL) {
-        printf("\t- Allocation failed\n");
+        errorf("allocation failed");
         return 1;
-    }
-    if (arena->next == NULL || arena->next->next != NULL) {
-        printf("\t- Unexpected size of allocation tables\n");
-        return 2;
+    } else if (arena->next == NULL || arena->next->next != NULL) {
+        errorf("unexpected size of allocation tables");
+        return 1;
     }
     printf("\tAllocation successful\n");
     printf("\n");

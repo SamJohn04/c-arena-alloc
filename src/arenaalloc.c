@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-size_t max(size_t, size_t);
+static inline size_t _max(size_t, size_t);
 
 arena_t* new_arena(size_t max_size) {
     arena_t* arena = malloc(sizeof(arena_t));
@@ -28,13 +28,14 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
     arena_t* previous_arena_block = NULL;
     arena_t* current_arena_block  = arena;
 
+    // loop until a free block is found or current arena block is null
     while (current_arena_block != NULL) {
         if (current_arena_block->remaining >= size) {
-            void* current     = arena->current;
-            arena->current   += size;
-            arena->remaining -= size;
+            void* current_memory = arena->current;
+            arena->current      += size;
+            arena->remaining    -= size;
 
-            return current;
+            return current_memory;
         }
         previous_arena_block = current_arena_block;
         current_arena_block  = current_arena_block->next;
@@ -42,14 +43,14 @@ void* alloc_from_arena(arena_t* arena, size_t size) {
 
     // previous_arena_block now has the last element
     previous_arena_block->next = new_arena(
-            max(arena->max_size, size));
+            _max(arena->max_size, size));
 
-    arena             = previous_arena_block->next;
-    void* current     = arena->current;
-    arena->current   += size;
-    arena->remaining -= size;
+    current_arena_block             = previous_arena_block->next;
+    void* current_memory            = current_arena_block->current;
+    current_arena_block->current   += size;
+    current_arena_block->remaining -= size;
 
-    return current;
+    return current_memory;
 }
 
 void free_arena(arena_t* arena) {
@@ -61,9 +62,6 @@ void free_arena(arena_t* arena) {
     }
 }
 
-size_t max(size_t a, size_t b) {
-    if (a < b) {
-        return b;
-    }
-    return a;
+size_t _max(size_t a, size_t b) {
+    return a < b ? b : a;
 }
