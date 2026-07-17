@@ -4,9 +4,11 @@ Allocate all you want, free just once.
 
 ## Usage
 
-Use `#include "arenaalloc.h"`, and compile it with `arenaalloc.c` also included in the file list.
+This is an `stb`-style implementation.
+Copy `arenaalloc.h` into your projects.
+Define `ARENA_ALLOC_IMPLEMENTATION` once.
 
-Eg:
+Example given:
 - main.c
 ```
 #include <stdio.h>
@@ -31,8 +33,4 @@ int main() {
     // free it all
     free_arena(arena);
 }
-```
-- compilation
-```
-gcc -o main main.c arenaalloc.c
 ```
