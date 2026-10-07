@@ -12,6 +12,8 @@ Example given:
 - main.c
 ```
 #include <stdio.h>
+
+#define ARENA_ALLOC_IMPLEMENTATION
 #include "arenaalloc.h"
 
 struct node_t {
@@ -22,15 +24,15 @@ struct node_t {
 int main() {
     // initialize the allocator with the maximum expected size
     // say, 128 bytes
-    arena_t* arena = new_arena(128);
+    arena_t* arena = arena_init(128);
 
     // allocate to a struct
-    struct node_t* node = alloc_from_arena(arena, sizeof(struct node_t));
+    struct node_t* node = arena_alloc(arena, sizeof(struct node_t));
     printf("Successful!\n");
 
     // ...
 
     // free it all
-    free_arena(arena);
+    arena_free(arena);
 }
 ```

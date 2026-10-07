@@ -1,17 +1,15 @@
-#define  ARENA_ALLOC_IMPLEMENTATION
+#define ARENA_ALLOC_IMPLEMENTATION
 #include "arenaalloc.h"
 #include <stdio.h>
 
-void errorf(char* message) {
-  fprintf(stderr, "[ERROR] %s\n", message);
-}
+void errorf(char *message) { fprintf(stderr, "[ERROR] %s\n", message); }
 
 int main(void) {
   // define for 1 KB
-  arena_t* arena = new_arena(1024);
+  arena_t *arena = arena_init(1024);
 
   printf("Allocating an element of size %zu\n", sizeof(int));
-  int* a = alloc_from_arena(arena, sizeof(int));
+  int *a = arena_alloc(arena, sizeof(int));
   if (a == NULL) {
     errorf("allocation failed");
     return 1;
@@ -20,7 +18,7 @@ int main(void) {
   printf("\n");
 
   printf("Allocating an element of size 300\n");
-  void* b = alloc_from_arena(arena, 300);
+  void *b = arena_alloc(arena, 300);
   if (b == NULL) {
     errorf("allocation failed");
     return 1;
@@ -32,7 +30,7 @@ int main(void) {
   printf("\n");
 
   printf("Allocating an element of size 2048\n");
-  void* c = alloc_from_arena(arena, 2048);
+  void *c = arena_alloc(arena, 2048);
   if (c == NULL) {
     errorf("allocation failed");
     return 1;
@@ -44,7 +42,7 @@ int main(void) {
   printf("\n");
 
   printf("Allocating an element of size 200\n");
-  void* d = alloc_from_arena(arena, 200);
+  void *d = arena_alloc(arena, 200);
   if (d == NULL) {
     errorf("allocation failed");
     return 1;
@@ -56,8 +54,8 @@ int main(void) {
   printf("\n");
 
   printf("Reset the arena\n");
-  reset_arena(arena);
-  void* e = alloc_from_arena(arena, 1);
+  arena_reset(arena);
+  void *e = arena_alloc(arena, 1);
   if (e != a) {
     printf("The first element of both goes is not the same");
     return 1;
@@ -66,7 +64,7 @@ int main(void) {
   printf("\n");
 
   printf("Free the arena\n");
-  free_arena(arena);
+  arena_free(arena);
   printf("\tFree successful\n");
   printf("\n");
 }
