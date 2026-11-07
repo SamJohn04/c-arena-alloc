@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+case $1 in
+  test)
+    gcc -Wall -Wextra -Werror "./src/arenaalloc.c" "./src/testarenaalloc.c" -o "./build/test"
+    "./build/test"
+    ;;
+  *)
+    gcc -Wall -Wextra -Werror -O2 -c "./src/arenaalloc.c" -o "./build/arenaalloc.o"
+    ar rcs "./build/libarenaalloc.a" "./build/arenaalloc.o"
+    if (( $? == 0 )); then
+      echo "lib successfully written"
+    fi
+    ;;
+esac
